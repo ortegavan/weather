@@ -1,11 +1,26 @@
-.right {
-    text-align: right;
+.main {
+    margin: 120px 0;
 }
 
-.no-margin {
-    margin-bottom: 0;
+.description {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.unit {
-    vertical-align: super;
+.location {
+    display: flex;
+    align-items: center;
+}
+
+.location span {
+    font-size: 1.2em;
+}
+
+.gray {
+    color: #8e8fab;
+}
+
+.center {
+    text-align: center;
 }

@@ -1,11 +1,20 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
 html,
 body {
     height: 100%;
 }
+
 body {
-    margin: 0;
+    background-color: #f2f4f8;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.v-pad {
-    margin: 16px 0;
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
