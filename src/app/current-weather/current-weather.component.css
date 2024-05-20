@@ -2,6 +2,10 @@
     margin: 120px 0;
 }
 
+.temperature {
+    font-size: 4em;
+}
+
 .description {
     display: flex;
     justify-content: center;
