@@ -1,27 +1,29 @@
 # Weather
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
+Aplicação de previsão do tempo feita para exercícios do livro "Angular for Enterprise Applications" de Doguhan Uluca.
 
-## Development server
+## Alteração 01: refatoração
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+-   Alterada assinatura do método `getCurrentWeather` de `WeatherService` para receber um termo de busca único para cidade ou cep e alterado país para ser opcional;
+-   Adicionado método `getWeatherByCoords` para buscar previsão do tempo por coordenadas;
+-   Criado método `getCurrentWeatherHelper` para centralizar a lógica de busca de previsão do tempo.
 
-## Code scaffolding
+Como resultado, a interface `IWeatherService` passou de:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```typescript
+export interface IWeatherService {
+    getCurrentWeather(city: string, country: string): Observable<ICurrentWeather>;
+}
+```
 
-## Build
+para:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```typescript
+export interface IWeatherService {
+    getCurrentWeather(search: string | number, country?: string): Observable<ICurrentWeather>;
 
-## Running unit tests
+    getCurrentWeatherByCoords(coords: GeolocationCoordinates): Observable<ICurrentWeather>;
+}
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+-   Implementada primeira versão do componente `city-search` para buscar previsão do tempo por cidade ou cep.
