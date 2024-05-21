@@ -1,0 +1,19 @@
+<form>
+    <mat-form-field class="full-width">
+        <mat-label>
+            City name or postal code
+        </mat-label>
+        <mat-icon matPrefix>
+            search
+        </mat-icon>
+        <input matInput [formControl]="search">
+        <mat-hint>
+            Specify country code like "London, UK" or "New York, US"
+        </mat-hint>
+        @if (search.invalid) {
+        <mat-error>
+            Type more than one character to search
+        </mat-error>
+        }
+    </mat-form-field>
+</form>

@@ -12,6 +12,10 @@ body {
 
 body {
     background-color: #f2f4f8;
+}
+
+body,
+input {
     font-family: "Lato", sans-serif;
 }
 
