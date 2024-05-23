@@ -1,7 +1,23 @@
+.card {
+    background-color: var(--background-block);
+}
+
 .container {
     margin: 0 auto;
     margin-top: 16px;
     width: 100%;
     max-width: 430px;
     border-radius: 4px;
+}
+
+.theme {
+    margin: 16px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.theme mat-icon {
+    margin: 4px 6px 0 6px;
 }

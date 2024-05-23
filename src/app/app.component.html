@@ -1,8 +1,13 @@
 <div class="container">
-    <mat-card appearance="outlined">
+    <mat-card appearance="outlined" class="card">
         <mat-card-content>
             <app-current-weather></app-current-weather>
             <app-city-search></app-city-search>
+            <section class="theme">
+                <mat-icon>brightness_5</mat-icon>
+                <mat-slide-toggle [checked]="toggleState()" (change)="toggleState.set($event.checked)"></mat-slide-toggle>
+                <mat-icon>bedtime</mat-icon>
+            </section>
         </mat-card-content>
     </mat-card>
 </div>

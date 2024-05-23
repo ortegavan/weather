@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
+html {
+    --text-color: #333;
+    --background-color: #f2f4f8;
+    --background-block: #fff;
+}
+
+html[data-theme="dark"] {
+    --text-color: #eaeaea;
+    --background-color: #333;
+    --background-block: #444;
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -11,7 +23,8 @@ body {
 }
 
 body {
-    background-color: #f2f4f8;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 body,
@@ -23,4 +36,20 @@ input {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Aplicar as variáveis aos componentes Angular Material */
+.mdc-text-field,
+.mdc-text-field__input,
+.mdc-floating-label {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
+}
+
+.mat-form-field-underline {
+    background-color: var(--primary-color) !important;
+}
+
+.mat-form-field-ripple {
+    background-color: var(--accent-color) !important;
 }

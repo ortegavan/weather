@@ -30,3 +30,9 @@ Aplicação de previsão do tempo feita para exercícios do livro "Angular for E
 -   Criada uma conta em [https://www.geonames.org](https://www.geonames.org) e armazenado o username em um arquivo de ambiente;
 -   Criada service `PostalCodeService` para buscar informações de localização a partir de um CEP;
 -   Alterada `WeatherService` para consultar as duas APIs (verifica se é um CEP válido e depois procede com a busca por previsão) usando `switchMap`.
+
+## Alteração 06: implementação do dark mode
+
+-   Criado um `signal` no AppComponent para controlar o modo claro/escuro;
+-   No `effect` é atualizado o local storage com a opção escolhida e setado o `data-theme` no `document.documentElement`;
+-   No CSS tem-se variáveis para as cores do modo claro e escuro.
