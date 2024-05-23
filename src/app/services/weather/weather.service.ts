@@ -2,48 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
-
-import { environment } from '../../environments/environment';
-import { ICurrentWeather } from '../interfaces';
+import { environment } from '../../../environments/environment';
+import { CurrentWeather } from '../../models/current-weather';
 import { PostalCodeService } from '../postal-code/postal-code.service';
-
-interface ICurrentWeatherData {
-    weather: [
-        {
-            description: string;
-            icon: string;
-        },
-    ];
-    main: {
-        temp: number;
-    };
-    sys: {
-        country: string;
-    };
-    dt: number;
-    name: string;
-}
-
-export interface IWeatherService {
-    readonly currentWeather$: BehaviorSubject<ICurrentWeather>;
-
-    getCurrentWeather(
-        search: string,
-        country?: string,
-    ): Observable<ICurrentWeather>;
-
-    getCurrentWeatherByCoords(
-        coords: GeolocationCoordinates,
-    ): Observable<ICurrentWeather>;
-
-    updateCurrentWeather(search: string, country?: string): void;
-}
+import { CurrentWeatherData } from '../../models/current-weather-data';
 
 @Injectable({
     providedIn: 'root',
 })
-export class WeatherService implements IWeatherService {
-    readonly currentWeather$ = new BehaviorSubject<ICurrentWeather>({
+export class WeatherService {
+    readonly currentWeather$ = new BehaviorSubject<CurrentWeather>({
         city: '',
         country: '',
         date: Date.now(),
@@ -66,7 +34,7 @@ export class WeatherService implements IWeatherService {
     getCurrentWeather(
         search: string,
         country?: string,
-    ): Observable<ICurrentWeather> {
+    ): Observable<CurrentWeather> {
         return this.postalCodeService.resolvePostalCode(search).pipe(
             switchMap((postalCode) => {
                 if (postalCode) {
@@ -86,7 +54,7 @@ export class WeatherService implements IWeatherService {
 
     getCurrentWeatherByCoords(
         coords: GeolocationCoordinates,
-    ): Observable<ICurrentWeather> {
+    ): Observable<CurrentWeather> {
         const uriParams = new HttpParams()
             .set('lat', coords.latitude.toString())
             .set('lon', coords.longitude.toString())
@@ -103,18 +71,18 @@ export class WeatherService implements IWeatherService {
 
     private getCurrentWeatherHelper(
         uriParams: HttpParams,
-    ): Observable<ICurrentWeather> {
+    ): Observable<CurrentWeather> {
         return this.httpClient
-            .get<ICurrentWeatherData>(
+            .get<CurrentWeatherData>(
                 `${environment.baseUrl}api.openweathermap.org/data/2.5/weather`,
                 { params: uriParams },
             )
-            .pipe(map((data) => this.transformToICurrentWeather(data)));
+            .pipe(map((data) => this.transformToCurrentWeather(data)));
     }
 
-    private transformToICurrentWeather(
-        data: ICurrentWeatherData,
-    ): ICurrentWeather {
+    private transformToCurrentWeather(
+        data: CurrentWeatherData,
+    ): CurrentWeather {
         return {
             city: data.name,
             country: data.sys.country,

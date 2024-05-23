@@ -8,7 +8,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { WeatherService } from '../weather/weather.service';
+import { WeatherService } from '../../services/weather/weather.service';
 import { Subject, debounceTime, filter, takeUntil, tap } from 'rxjs';
 
 @Component({

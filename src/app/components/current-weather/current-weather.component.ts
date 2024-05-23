@@ -1,7 +1,7 @@
 import { DatePipe, DecimalPipe, AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { ICurrentWeather } from '../interfaces';
-import { WeatherService } from '../weather/weather.service';
+import { CurrentWeather } from '../../models/current-weather';
+import { WeatherService } from '../../services/weather/weather.service';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
     imports: [DecimalPipe, DatePipe, MatIconModule, AsyncPipe],
 })
 export class CurrentWeatherComponent {
-    current$!: Observable<ICurrentWeather>;
+    current$!: Observable<CurrentWeather>;
 
     constructor(private weatherService: WeatherService) {
         this.current$ = this.weatherService.currentWeather$;

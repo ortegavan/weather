@@ -3,8 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { CurrentWeatherComponent } from './current-weather/current-weather.component';
-import { CitySearchComponent } from './city-search/city-search.component';
+import { CurrentWeatherComponent } from './components/current-weather/current-weather.component';
+import { CitySearchComponent } from './components/city-search/city-search.component';
 
 @Component({
     selector: 'app-root',
