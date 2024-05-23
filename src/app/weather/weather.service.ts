@@ -55,7 +55,13 @@ export class WeatherService implements IWeatherService {
     constructor(
         private httpClient: HttpClient,
         private postalCodeService: PostalCodeService,
-    ) {}
+    ) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.getCurrentWeatherByCoords(position.coords).subscribe((data) =>
+                this.currentWeather$.next(data),
+            );
+        });
+    }
 
     getCurrentWeather(
         search: string,

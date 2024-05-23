@@ -36,3 +36,7 @@ Aplicação de previsão do tempo feita para exercícios do livro "Angular for E
 -   Criado um `signal` no AppComponent para controlar o modo claro/escuro;
 -   No `effect` é atualizado o local storage com a opção escolhida e setado o `data-theme` no `document.documentElement`;
 -   No CSS tem-se variáveis para as cores do modo claro e escuro.
+
+## Alteração 07: implementação da previsão inicial
+
+-   Se o usuário permitir, a aplicação irá buscar a previsão do tempo com base na geolocalização dele usando `navigator.geolocation.getCurrentPosition`.
