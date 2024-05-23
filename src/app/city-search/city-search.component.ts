@@ -32,14 +32,10 @@ export class CitySearchComponent implements OnInit {
         this.search.valueChanges.pipe(debounceTime(1000)).subscribe((value) => {
             if (!this.search.invalid && value) {
                 const input = value.split(',').map((s: string) => s.trim());
-                this.service
-                    .getCurrentWeather(
-                        input[0],
-                        input.length > 1 ? input[1] : undefined,
-                    )
-                    .subscribe((weather) => {
-                        console.log(weather);
-                    });
+                this.service.updateCurrentWeather(
+                    input[0],
+                    input.length > 1 ? input[1] : undefined,
+                );
             }
         });
     }
