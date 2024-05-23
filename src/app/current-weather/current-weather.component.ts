@@ -1,24 +1,22 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { DatePipe, DecimalPipe, AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { ICurrentWeather } from '../interfaces';
 import { WeatherService } from '../weather/weather.service';
 import { MatIconModule } from '@angular/material/icon';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-current-weather',
     templateUrl: './current-weather.component.html',
     styleUrls: ['./current-weather.component.css'],
     standalone: true,
-    imports: [DecimalPipe, DatePipe, MatIconModule],
+    imports: [DecimalPipe, DatePipe, MatIconModule, AsyncPipe],
 })
-export class CurrentWeatherComponent implements OnInit {
-    constructor(private weatherService: WeatherService) {}
-    current!: ICurrentWeather;
+export class CurrentWeatherComponent {
+    current$!: Observable<ICurrentWeather>;
 
-    ngOnInit(): void {
-        this.weatherService.currentWeather$.subscribe(
-            (data) => (this.current = data),
-        );
+    constructor(private weatherService: WeatherService) {
+        this.current$ = this.weatherService.currentWeather$;
     }
 
     getOrdinal(date: number) {

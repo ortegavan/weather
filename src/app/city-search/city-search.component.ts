@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
     FormControl,
     FormsModule,
@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { WeatherService } from '../weather/weather.service';
-import { debounceTime } from 'rxjs';
+import { Subject, debounceTime, filter, takeUntil, tap } from 'rxjs';
 
 @Component({
     selector: 'app-city-search',
@@ -24,19 +24,32 @@ import { debounceTime } from 'rxjs';
     templateUrl: './city-search.component.html',
     styleUrl: './city-search.component.css',
 })
-export class CitySearchComponent implements OnInit {
+export class CitySearchComponent implements OnInit, OnDestroy {
+    stop$ = new Subject<void>();
     service = inject(WeatherService);
     search = new FormControl('', [Validators.minLength(2)]);
 
     ngOnInit(): void {
-        this.search.valueChanges.pipe(debounceTime(1000)).subscribe((value) => {
-            if (!this.search.invalid && value) {
-                const input = value.split(',').map((s: string) => s.trim());
-                this.service.updateCurrentWeather(
-                    input[0],
-                    input.length > 1 ? input[1] : undefined,
-                );
-            }
-        });
+        this.search.valueChanges
+            .pipe(
+                takeUntil(this.stop$),
+                filter(() => this.search.valid),
+                debounceTime(1000),
+            )
+            .subscribe((value) => this.doSearch(value));
+    }
+
+    ngOnDestroy(): void {
+        this.stop$.next();
+        this.stop$.complete();
+    }
+
+    doSearch(value: string | null) {
+        if (value) {
+            const userInput = value.split(',').map((s: string) => s.trim());
+            const searchText = userInput[0];
+            const country = userInput.length > 1 ? userInput[1] : undefined;
+            this.service.updateCurrentWeather(searchText, country);
+        }
     }
 }
