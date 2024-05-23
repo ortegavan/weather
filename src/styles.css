@@ -39,11 +39,14 @@ input {
 }
 
 /* Aplicar as variáveis aos componentes Angular Material */
-.mdc-text-field,
+.mdc-text-field {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
+}
+
 .mdc-text-field__input,
 .mdc-floating-label {
     color: var(--text-color) !important;
-    background-color: var(--background-color) !important;
 }
 
 .mat-form-field-underline {
