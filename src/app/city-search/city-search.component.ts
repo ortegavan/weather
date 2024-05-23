@@ -35,8 +35,9 @@ export class CitySearchComponent implements OnInit, OnDestroy {
                 takeUntil(this.stop$),
                 filter(() => this.search.valid),
                 debounceTime(1000),
+                tap(() => this.doSearch(this.search.value)),
             )
-            .subscribe((value) => this.doSearch(value));
+            .subscribe();
     }
 
     ngOnDestroy(): void {
