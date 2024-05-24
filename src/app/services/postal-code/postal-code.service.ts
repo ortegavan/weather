@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, defaultIfEmpty, flatMap } from 'rxjs';
+import { Observable, defaultIfEmpty, mergeMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PostalCode } from '../../models/postal-code';
 import { PostalCodeData } from '../../models/postal-code-data';
@@ -23,7 +23,7 @@ export class PostalCodeService {
                 { params: uriParams },
             )
             .pipe(
-                flatMap((data) => data.postalCodes),
+                mergeMap((data) => data.postalCodes),
                 defaultIfEmpty(null),
             );
     }

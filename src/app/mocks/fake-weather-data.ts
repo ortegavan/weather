@@ -3,16 +3,16 @@ import { CurrentWeatherData } from '../models/current-weather-data';
 export const fakeWeatherData: CurrentWeatherData = {
     weather: [
         {
-            description: 'sunny',
-            icon: '',
+            description: 'few clouds',
+            icon: '02d',
         },
     ],
     main: {
-        temp: 280.32,
+        temp: 302,
     },
     sys: {
-        country: 'TR',
+        country: 'BR',
     },
-    dt: 1485789600,
-    name: 'Bursa',
+    dt: 1716560966000,
+    name: 'Ubatuba',
 };

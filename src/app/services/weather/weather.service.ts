@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CurrentWeather } from '../../models/current-weather';
 import { PostalCodeService } from '../postal-code/postal-code.service';
@@ -37,7 +37,7 @@ export class WeatherService {
     ): Observable<CurrentWeather> {
         return this.postalCodeService.resolvePostalCode(search).pipe(
             switchMap((postalCode) => {
-                if (postalCode) {
+                if (postalCode && postalCode.lat && postalCode.lng) {
                     return this.getCurrentWeatherByCoords({
                         latitude: postalCode.lat,
                         longitude: postalCode.lng,
@@ -88,12 +88,8 @@ export class WeatherService {
             country: data.sys.country,
             date: data.dt * 1000,
             image: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`,
-            temperature: this.convertKelvinToCelsius(data.main.temp),
+            temperature: data.main.temp - 273.15,
             description: data.weather[0].description,
         };
-    }
-
-    private convertKelvinToCelsius(kelvin: number): number {
-        return kelvin - 273.15;
     }
 }

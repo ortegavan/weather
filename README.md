@@ -40,3 +40,8 @@ Aplicação de previsão do tempo feita para exercícios do livro "Angular for E
 ## Alteração 07: implementação da previsão inicial
 
 -   Se o usuário permitir, a aplicação irá buscar a previsão do tempo com base na geolocalização dele usando `navigator.geolocation.getCurrentPosition`.
+
+## Alteração 08: implementação de testes unitários
+
+-   Removidos Jasmine e Karma e adicionado Jest seguindo [este link](https://medium.com/edataconsulting/how-to-switch-from-karma-to-jest-using-angular-7335588ffdf0);
+-   Escritos testes unitários para WeatherService.

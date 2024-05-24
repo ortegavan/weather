@@ -1,97 +1,140 @@
+/// <reference types="jest" />
+import { TestBed } from '@angular/core/testing';
 import {
     HttpClientTestingModule,
     HttpTestingController,
 } from '@angular/common/http/testing';
-import { inject, TestBed, waitForAsync } from '@angular/core/testing';
-import { autoSpyObj, injectClass, injectSpy } from 'angular-unit-test-helper';
-import { first, of } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { PostalCodeService } from '../postal-code/postal-code.service';
 import { WeatherService } from './weather.service';
-import { PostalCode } from '../../models/postal-code';
+import { environment } from '../../../environments/environment';
+import { fakeWeather } from '../../mocks/fake-weather';
+import { PostalCodeService } from '../postal-code/postal-code.service';
+import { of } from 'rxjs';
+import { fakePostalCode } from '../../mocks/fake-postal-code';
 
 describe('WeatherService', () => {
     let weatherService: WeatherService;
-    let postalCodeServiceMock: jasmine.SpyObj<PostalCodeService>;
+    let httpMock: HttpTestingController;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [
-                {
-                    provide: PostalCodeService,
-                    useValue: autoSpyObj(PostalCodeService),
-                },
-            ],
+            providers: [WeatherService, PostalCodeService],
         });
 
-        weatherService = injectClass(WeatherService);
-        postalCodeServiceMock = injectSpy(PostalCodeService);
+        weatherService = TestBed.inject(WeatherService);
+        httpMock = TestBed.inject(HttpTestingController);
+
+        // Mock do navigator.geolocation.getCurrentPosition
+        const geo = navigator.geolocation.getCurrentPosition as jest.Mock;
+        geo.mockImplementation((success) => {
+            success({
+                coords: {
+                    latitude: -23.4262064362018,
+                    longitude: -45.0363296053412,
+                },
+            });
+        });
     });
 
-    it('should be created', waitForAsync(
-        inject([WeatherService], (service: WeatherService) => {
-            expect(service).toBeTruthy();
-        }),
-    ));
+    afterEach(() => {
+        httpMock.verify();
+    });
 
-    describe('getCurrentWeather', () => {
-        it('should return value given city name', () => {
-            // Arrange
-            const httpMock = TestBed.inject(HttpTestingController);
-            const uriParams = 'q=Bursa';
-            // postalCodeServiceMock.resolvePostalCode.and.returnValue(
-            //     of(defaultPostalCode),
-            // );
+    it('should be created', () => {
+        expect(weatherService).toBeTruthy();
+    });
 
-            // Act
-            weatherService
-                .getCurrentWeather('Bursa')
-                .pipe(first())
-                .subscribe((data) => {
-                    // Assert
-                    expect(data.city).toEqual('Bursa');
-                });
+    it('should get weather by zip', () => {
+        const city = 'Ubatuba';
+        const zip = '11680-000';
 
-            // Assert
-            const request = httpMock.expectOne(
-                `${environment.baseUrl}api.openweathermap.org/data/2.5/weather?` +
-                    `${uriParams}&appid=01ff1417eeb4a81b09ac68b15958d453`,
-                'call to api',
-            );
-
-            expect(request.request.method).toBe('GET');
-
-            // request.flush(fakeWeatherData);
-
-            httpMock.verify();
+        weatherService.getCurrentWeather(zip).subscribe((weather) => {
+            expect(weather.city).toEqual(city);
         });
 
-        it('should return value given zip code', () => {
-            // Arrange
-            const httpMock = TestBed.inject(HttpTestingController);
-            const uriParams = 'lat=38.887103&lon=-77.093197';
-            postalCodeServiceMock.resolvePostalCode.and.returnValue(
-                of({
-                    postalCode: '22201',
-                    lat: 38.887103,
-                    lng: -77.093197,
-                    countryCode: 'US',
-                    placeName: 'Arlington',
-                } as PostalCode),
-            );
+        requestByCurrentPosition(httpMock);
 
-            // Act
-            weatherService.getCurrentWeather('22201').pipe(first()).subscribe();
+        const postalReq = httpMock.expectOne(
+            `${environment.baseUrl}${environment.geonamesAPI}/postalCodeSearchJSON?maxRows=1&username=${environment.username}&postalcode=${zip}`,
+        );
+        expect(postalReq.request.method).toBe('GET');
+        postalReq.flush({ postalCodes: [fakePostalCode] });
 
-            // Assert
-            const request = httpMock.expectOne(
-                `${environment.baseUrl}api.openweathermap.org/data/2.5/weather?` +
-                    `${uriParams}&appid=01ff1417eeb4a81b09ac68b15958d453`,
-                'call to api',
-            );
+        const weatherReq = httpMock.expectOne(
+            `http://api.openweathermap.org/data/2.5/weather?lat=${fakePostalCode.lat}&lon=${fakePostalCode.lng}&appid=${environment.appId}`,
+        );
+        expect(weatherReq.request.method).toBe('GET');
+        weatherReq.flush(fakeWeather);
+    });
 
-            expect(request.request.method).toBe('GET');
+    it('should get weather by city', () => {
+        const city = 'Ubatuba';
+
+        weatherService.getCurrentWeather(city).subscribe((weather) => {
+            expect(weather.city).toEqual(city);
         });
+
+        requestByCurrentPosition(httpMock);
+
+        const postalReq = httpMock.expectOne(
+            `${environment.baseUrl}${environment.geonamesAPI}/postalCodeSearchJSON?maxRows=1&username=${environment.username}&postalcode=${city}`,
+        );
+        expect(postalReq.request.method).toBe('GET');
+        postalReq.flush({ postalCodes: [] });
+
+        const weatherReq = httpMock.expectOne(
+            `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${environment.appId}`,
+        );
+        expect(weatherReq.request.method).toBe('GET');
+        weatherReq.flush(fakeWeather);
+    });
+
+    it('should get weather by city and country', () => {
+        const city = 'Ubatuba';
+        const country = 'BR';
+
+        weatherService.getCurrentWeather(city, country).subscribe((weather) => {
+            expect(weather).toEqual(fakeWeather);
+        });
+
+        requestByCurrentPosition(httpMock);
+
+        const postalReq = httpMock.expectOne(
+            `${environment.baseUrl}${environment.geonamesAPI}/postalCodeSearchJSON?maxRows=1&username=${environment.username}&postalcode=${city}`,
+        );
+        expect(postalReq.request.method).toBe('GET');
+        postalReq.flush({ postalCodes: [] });
+
+        const weatherReq = httpMock.expectOne(
+            `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${environment.appId}`,
+        );
+        expect(weatherReq.request.method).toBe('GET');
+        weatherReq.flush(fakeWeather);
+    });
+
+    it('should update current weather', () => {
+        jest.spyOn(weatherService, 'getCurrentWeather').mockReturnValue(
+            of(fakeWeather),
+        );
+
+        const city = 'Ubatuba';
+
+        weatherService.updateCurrentWeather(city);
+
+        weatherService.currentWeather$.subscribe((data) => {
+            expect(data).toEqual(fakeWeather);
+        });
+
+        requestByCurrentPosition(httpMock);
+
+        expect(weatherService.getCurrentWeather).toHaveBeenCalled();
     });
 });
+
+function requestByCurrentPosition(httpMock: HttpTestingController) {
+    const request = httpMock.expectOne(
+        `http://api.openweathermap.org/data/2.5/weather?lat=${fakePostalCode.lat}&lon=${fakePostalCode.lng}&appid=${environment.appId}`,
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush(fakeWeather);
+}
