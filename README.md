@@ -44,4 +44,4 @@ Aplicação de previsão do tempo feita para exercícios do livro "Angular for E
 ## Alteração 08: implementação de testes unitários
 
 -   Removidos Jasmine e Karma e adicionado Jest seguindo [este link](https://medium.com/edataconsulting/how-to-switch-from-karma-to-jest-using-angular-7335588ffdf0);
--   Escritos testes unitários para WeatherService.
+-   Escritos testes unitários para WeatherService e PostalCodeService.
