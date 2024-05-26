@@ -37,7 +37,7 @@ export class WeatherService {
     ): Observable<CurrentWeather> {
         return this.postalCodeService.resolvePostalCode(search).pipe(
             switchMap((postalCode) => {
-                if (postalCode && postalCode.lat && postalCode.lng) {
+                if (postalCode) {
                     return this.getCurrentWeatherByCoords({
                         latitude: postalCode.lat,
                         longitude: postalCode.lng,
