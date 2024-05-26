@@ -11,7 +11,7 @@ import { PostalCodeData } from '../../models/postal-code-data';
 export class PostalCodeService {
     constructor(private httpClient: HttpClient) {}
 
-    resolvePostalCode(postalCode: string): Observable<PostalCode | null> {
+    resolvePostalCode(postalCode: string): Observable<PostalCode> {
         const uriParams = new HttpParams()
             .set('maxRows', '1')
             .set('username', environment.username)
@@ -22,9 +22,6 @@ export class PostalCodeService {
                 `${environment.baseUrl}${environment.geonamesAPI}/postalCodeSearchJSON`,
                 { params: uriParams },
             )
-            .pipe(
-                map((data) => data.postalCodes[0]),
-                defaultIfEmpty(null),
-            );
+            .pipe(map((data) => data.postalCodes[0]));
     }
 }
