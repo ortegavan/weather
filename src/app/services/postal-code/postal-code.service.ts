@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, defaultIfEmpty, mergeMap } from 'rxjs';
+import { Observable, defaultIfEmpty, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PostalCode } from '../../models/postal-code';
 import { PostalCodeData } from '../../models/postal-code-data';
@@ -23,7 +23,7 @@ export class PostalCodeService {
                 { params: uriParams },
             )
             .pipe(
-                mergeMap((data) => data.postalCodes),
+                map((data) => data.postalCodes[0]),
                 defaultIfEmpty(null),
             );
     }
